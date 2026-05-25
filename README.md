@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+**Melo Screening — AI Interview Question Generator**
 
-## Getting Started
+A small Next.js app that generates three role-specific screening interview questions using a Server Action and the Gemini (Google) generative model via the Vercel AI SDK.
 
-First, run the development server:
+**Quick Start**
+
+- Install dependencies:
+
+```bash
+npm install
+```
+- Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+- Open http://localhost:3000 in your browser.
+
+**Required environment**
+
+- Add your Gemini API key to `.env.local`:
+
+```bash
+GEMINI_API_KEY=your_api_key_here
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+If `GEMINI_API_KEY` is missing the app will show a configuration alert (see [app/actions.ts](app/actions.ts)).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**What this repo contains**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Client page and layout: [app/page.tsx](app/page.tsx) and [app/layout.tsx](app/layout.tsx)
+- Server Action that calls the generative model: [app/actions.ts](app/actions.ts)
+- UI components: [components/Hero.tsx](components/Hero.tsx), [components/SuggestionTags.tsx](components/SuggestionTags.tsx), [components/QuestionList.tsx](components/QuestionList.tsx), [components/QuestionCard.tsx](components/QuestionCard.tsx), [components/SkeletonLoader.tsx](components/SkeletonLoader.tsx), [components/StatusAlert.tsx](components/StatusAlert.tsx)
 
-## Learn More
+**Architecture (high level)**
 
-To learn more about Next.js, take a look at the following resources:
+```mermaid
+graph LR
+  BROWSER[Browser / Client]
+  PAGE[Client Page]
+  SERVER_ACTION[Server Action]
+  GEMINI[Gemini API]
+  QUESTION_LIST[Question List]
+  QUESTION_CARD[Question Card]
+  BROWSER -->|submit jobTitle| PAGE
+  PAGE -->|form action| SERVER_ACTION
+  SERVER_ACTION -->|create provider| GEMINI
+  GEMINI -->|response json| SERVER_ACTION
+  SERVER_ACTION -->|returns state| PAGE
+  PAGE --> QUESTION_LIST
+  QUESTION_LIST --> QUESTION_CARD
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This shows the main runtime flow: the client submits a form bound to a Server Action, the Server Action calls the generative API, validates and returns structured question objects, and the client renders them using the component tree.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Component map**
 
-## Deploy on Vercel
+- `Hero` — typographic header on the left panel ([components/Hero.tsx](components/Hero.tsx)).
+- `SuggestionTags` — quick-select job titles that auto-submit the form ([components/SuggestionTags.tsx](components/SuggestionTags.tsx)).
+- `QuestionList` — renders a list of `QuestionCard` components ([components/QuestionList.tsx](components/QuestionList.tsx)).
+- `QuestionCard` — interactive card that shows question text and expandable rationale/ideal answers ([components/QuestionCard.tsx](components/QuestionCard.tsx)).
+- `SkeletonLoader` — loading placeholders shown while the Server Action is pending ([components/SkeletonLoader.tsx](components/SkeletonLoader.tsx)).
+- `StatusAlert` — displays setup errors such as a missing `GEMINI_API_KEY` ([components/StatusAlert.tsx](components/StatusAlert.tsx)).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Server Action / AI integration**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- The Server Action is implemented in [app/actions.ts](app/actions.ts) and uses:
+	- `generateText` from the `ai` package with `Output.object(...)` for structured output validation.
+	- `createGoogleGenerativeAI` from `@ai-sdk/google` to wire the provider using `GEMINI_API_KEY`.
+	- `zod` for input validation (`jobTitle`) and output schema validation for each question item.
+
+Important notes:
+- The Server Action validates the job title and returns clear error messages when the API key is missing or the AI call fails.
+- The action expects the model output to match the `QuestionsArraySchema` defined in the file.
+
+**Files to inspect for behavior/debugging**
+
+- [app/actions.ts](app/actions.ts) — the core Server Action and AI integration.
+- [app/page.tsx](app/page.tsx) — main client page, form binding, and UI orchestration.
+- [components/QuestionCard.tsx](components/QuestionCard.tsx) — copy, accordion UI and local state.
+
+**Deploy**
+
+- This app is compatible with Vercel. Ensure `GEMINI_API_KEY` is set in your Vercel project environment variables before deploying.
+
+**Contributing / Extending**
+
+- To change the question generation behavior, edit the prompt and the output schema in [app/actions.ts](app/actions.ts).
+- To support more questions or different formats, update the `QuestionsArraySchema` and adjust the UI in `QuestionList` / `QuestionCard`.
+
