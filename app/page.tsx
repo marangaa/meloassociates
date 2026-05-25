@@ -2,7 +2,6 @@
 
 import React, { useActionState, useRef } from 'react'
 import { generateInterviewQuestions, ActionState } from './actions'
-import { Header } from '../components/Header'
 import { Hero } from '../components/Hero'
 import { SuggestionTags } from '../components/SuggestionTags'
 import { SkeletonLoader } from '../components/SkeletonLoader'
@@ -58,10 +57,7 @@ export default function Home(): React.JSX.Element {
   const showPlaceholder = !pending && (!state || !state.success || !state.questions)
 
   return (
-    <div className="flex-1 flex flex-col justify-between py-12 px-6 sm:px-8 max-w-6xl w-full mx-auto font-sans">
-      {/* Brand logo header and repository navigation */}
-      <Header />
-
+    <div className="flex-1 flex flex-col py-12 px-6 sm:px-8 max-w-6xl w-full mx-auto font-sans">
       {/* Main functional workspace arranged as a side-by-side dashboard layout */}
       <main className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-12 lg:gap-16 items-start w-full my-auto">
         
@@ -159,12 +155,6 @@ export default function Home(): React.JSX.Element {
 
       </main>
 
-      {/* footer details with audited text contrast for improved compliance */}
-      <footer className="mt-16 text-center border-t border-zinc-900 pt-6">
-        <p className="text-[11px] font-mono text-zinc-500 hover:text-zinc-400 transition-colors select-none">
-          Melo Associates © 2026. Made with Next.js & Gemini API.
-        </p>
-      </footer>
     </div>
   )
 }
