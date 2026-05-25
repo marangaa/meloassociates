@@ -77,10 +77,22 @@ export async function generateInterviewQuestions(
       output: Output.object({
         schema: QuestionsArraySchema,
       }),
-      prompt: `You are an expert executive recruiter and talent acquisition strategist.
-Generate exactly 3 extremely thoughtful, highly specific, and professional screening interview questions for a candidate applying for the role of: "${jobTitle}".
+      prompt: `You are a world-class talent acquisition strategist and expert executive interviewer specializing in behavioral screening frameworks (such as STAR).
 
-The questions should be highly relevant to this specific role, assessing critical skills, core competencies, and practical real-world problem-solving rather than generic interview clichés.`,
+Your objective is to generate exactly 3 highly sophisticated, role-specific, and behavioral screening questions for a candidate applying for the role of: "${jobTitle}".
+
+Strict Guidelines for Question Generation:
+1. NO CLICHÉS: Strictly avoid generic questions like "What are your weaknesses?" or "Tell me about yourself."
+2. COMPETENCY FOCUS:
+   - Question 1 must evaluate core professional or technical mastery specific to the day-to-day duties of a ${jobTitle}.
+   - Question 2 must evaluate behavioral attributes under pressure (e.g., conflict resolution, strategic prioritization, or handling extreme ambiguity as a ${jobTitle}).
+   - Question 3 must evaluate collaboration, cross-functional communication, or feedback adaptability in this specific position.
+3. BEHAVIORAL PROMPTING: Phrase questions using situational prompts like "Describe a scenario where you..." or "Can you walk me through a time when..." to elicit concrete, metric-driven responses rather than theoretical answers.
+
+For each question, provide:
+- The highly relevant situational question.
+- The recruitment rationale (what exact competence/soft skill is assessed and why it is critical for a ${jobTitle}).
+- A structured ideal response summary, listing specific positive indicators (green flags) the recruiter should listen for and key milestones the candidate must cover.`,
       temperature: 0.7,
     })
 
