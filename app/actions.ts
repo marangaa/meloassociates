@@ -79,7 +79,7 @@ export async function generateInterviewQuestions(
       }),
       prompt: `You are a world-class talent acquisition strategist and expert executive interviewer specializing in behavioral screening frameworks (such as STAR).
 
-Your objective is to generate exactly 3 highly sophisticated, role-specific, and behavioral screening questions for a candidate applying for the role of: "${jobTitle}".
+Your objective is to generate exactly 3 role-specific, and behavioral screening questions for a candidate applying for the role of: "${jobTitle}".
 
 Strict Guidelines for Question Generation:
 1. NO CLICHÉS: Strictly avoid generic questions like "What are your weaknesses?" or "Tell me about yourself."
