@@ -73,7 +73,7 @@ export async function generateInterviewQuestions(
     })
 
     const apiResult = await generateText({
-      model: googleProvider('gemini-2.5-flash'),
+      model: googleProvider('gemini-flash-lite-latest'),
       output: Output.object({
         schema: QuestionsArraySchema,
       }),
